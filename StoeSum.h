@@ -48,6 +48,8 @@ public:
     size_t numRuns() const { return runs_; }
     // assume the users starts counting at 1
     RunInfo run(const int r) const { return runs_info_[r-1]; }
+    // create xdstemplate from sumfile name and run number
+    std::string xdstemplate (int run) const;
     // extract run number and return template from a master h5 file
     std::string xdstemplate (const std::string& masterh5file, int& run);
 };

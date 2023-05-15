@@ -14,6 +14,33 @@
 #include <complex>
 #include <iomanip>
 
+#include <sys/stat.h>
+#include <sstream>
+
+/**
+ * Create the output directory and return its name
+ * TODO: catch error codes
+ * @param name
+ * @param run
+ * @return 
+ */
+std::string io::out::outdir(const std::string name, const int& run) {
+    std::ostringstream outd;
+    outd << name << std::setw(2) << std::setfill('0') << run;
+    std::string dirname = outd.str();
+    int status = mkdir(dirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    
+    switch (status) {
+        case EACCES: 
+            std::cout << "*** Error: Cannot create output directory " << dirname << std::endl;
+            throw myExcepts::FileIO ("Cannot create output subdirectory");
+            break;
+        case EEXIST: return dirname;
+    }
+    
+    return dirname;
+    
+}
 void io::out::xdsout(const Params& params) {
         std::cout << " DETECTOR= EIGERR500\n"
                 << " GAIN= 1.0\n"
@@ -40,31 +67,35 @@ void io::out::xdsout(const Params& params) {
 
         
 }
-void io::out::xdsout(const RunInfo& run) {
+std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std::string& xdstempl) {
         // assumes detector swing axis always vertical
 
     /*
      some comments
      */
-    std::cout << '\n';
-    std::cout << "! Data extracted for run number " << run.run_number_ << "\n";
-    std::cout << "! 2theta = " << std::setprecision(1) << std::fixed << std::setw(6) 
+    outp << '\n';
+    outp << "! Data extracted for run number " << run.run_number_ << "\n";
+    outp << "! 2theta = " << std::setprecision(1) << std::fixed << std::setw(6) 
                 << run.two_theta_ << "deg, assuming vertical swing axis\n";
     if (run.omegascan_) {
-        std::cout << "! Rotation about omega axis\n";
+        outp << "! Rotation about omega axis\n";
     }
     else if (run.phiscan_) {
-        std::cout << "! Rotation about phi axis\n";
+        outp << "! Rotation about phi axis\n";
     }
-    std::cout << std::endl;
+    outp << std::endl;
     /*
      Detector information, assuming hybrid pixel detector
      */
-    std::cout << " DETECTOR= " << run.detector_ << '\n'
+    outp << " DETECTOR= " << run.detector_ << '\n'
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
             << '\n'
-            << " TRUSTED_REGION=  0.00  1.5\n" 
+            << " NX=" << " 1031" << " NY=" << " 515"
+            << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
+            << "\n";
+    
+    outp << " TRUSTED_REGION=  0.00  1.5\n" 
             // refine defaults for IDXREF, CORRECT, but nothing for INTEGRATIO
             << "! REFINE(IDXREF)=  POSITION BEAM AXIS ORIENTATION CELL\n"
             << "  REFINE(INTEGRATE)=  !POSITION BEAM AXIS ORIENTATION CELL\n"
@@ -72,26 +103,23 @@ void io::out::xdsout(const RunInfo& run) {
             << "! *** warning ***: overload and minimum_valid_pixel_value hardcoded\n";
     // at CuKa (lambda = 1.54A) gain should be 1.0
     if (run.lambda_ > 1.5) {
-        std::cout << " GAIN= 1.0\n";
+        outp << " GAIN= 1.0\n";
     }
     // at MoKa (lambda = 0.713A) gain is about 0.7A, but not determined!
     else if (run.lambda_ < 0.8) {
-        std::cout << " GAIN= 0.7\n";
+        outp << " GAIN= 0.7\n"
+                << " DATA_RANGE_FIXED_SCALE_FACTOR= 1 999 1.0\n";
     }
     // otherwise leave gain unset
     
-    std::cout << " NX=" << " 1031" << " NY=" << " 515";
-        std::cout << " QX=" << run.pixelsize_ << " QY=" << run.pixelsize_
-            << "\n";
+    outp << "! JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
+    outp << " JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
+    outp << " SNRC= 50\n\n";
+    outp << " DELPHI= 25\n";
+    outp << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
+    outp << " FRACTION_OF_POLARIZATION=0.50\n";
 
-    std::cout << "! JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
-    std::cout << " JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
-    std::cout << " SNRC= 50\n\n";
-    std::cout << " DELPHI= 25\n";
-    std::cout << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
-    std::cout << " FRACTION_OF_POLARIZATION=0.50\n";
-
-    std::cout << " DIRECTION_OF_DETECTOR_X-AXIS= "
+    outp << " DIRECTION_OF_DETECTOR_X-AXIS= "
             << std::fixed
             << std::setprecision(6)
             << std::setw(9)
@@ -100,21 +128,25 @@ void io::out::xdsout(const RunInfo& run) {
             << std::setprecision(6)
             << std::setw(9)
             << std::sin(M_PI/180.*run.two_theta_) << "\n";
-    std::cout << " DIRECTION_OF_DETECTOR_Y-AXIS= "
+    outp << " DIRECTION_OF_DETECTOR_Y-AXIS= "
             << "0.0 1.0 0.0\n";
-    std::cout << " X-RAY_WAVELENGTH= " << run.lambda_ << "   !Angstroem\n";
-    std::cout << " OSCILLATION_RANGE= " << std::abs(run.deltaAngle_) << " \n";
+    outp << " X-RAY_WAVELENGTH= " << run.lambda_ << "   !Angstroem\n";
+    outp << " OSCILLATION_RANGE= " << std::abs(run.deltaAngle_) << " \n";
 
-    std::cout << " ROTATION_AXIS= " << run.rotation_x_ << " " << run.rotation_y_
+    outp << " ROTATION_AXIS= " << run.rotation_x_ << " " << run.rotation_y_
             << " " << run.rotation_z_ << "\n";
 
-    std::cout << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
-    std::cout << " DETECTOR_DISTANCE= " << std::setprecision(3) << run.delta_ << " !(mm)\n";
+    outp << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
+    outp << " DETECTOR_DISTANCE= " << std::setprecision(3) << run.delta_ << " !(mm)\n";
     
-    std::cout << '\n';
-    //! STOE tuns seem to  always start at 1?
-    std::cout << " DATA_RANGE= " << 1 << " " << run.numframes() << "\n";
-    std::cout << '\n';
+    outp << '\n';
+    //! STOE tuns seem to  always start at 1
+    outp << " NAME_TEMPLATE_OF_DATA_FRAMES=" << "../" << xdstempl << '\n';
+    outp << " DATA_RANGE= " << 1 << " " << run.numframes() +1<< "\n";
+    outp << '\n';
+    outp << " BEAM_DIVERGENCE=   0.93746  BEAM_DIVERGENCE_E.S.D.=   0.09375" << '\n'
+         << " REFLECTING_RANGE=  0.62062  REFLECTING_RANGE_E.S.D.=  0.08866" << '\n';
     
+    return outp;
 }
 

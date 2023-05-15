@@ -19,11 +19,13 @@
 
 namespace io {
     namespace out {
+        // create a directory named 'name'+run
+        std::string outdir (const std::string name, const int& run);
         //! print standard settings assuming EIGER2 R500
         void xdsout(const Params& params);
 
         //! print parameters from a RunInfo
-        void xdsout(const RunInfo& runinfo);
+        std::ostream& xdsout(std::ostream& outp, const RunInfo& runinfo, const std::string& xdstempl);
     }
 }
 

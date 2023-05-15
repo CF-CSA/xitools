@@ -18,6 +18,7 @@
 
 namespace Utils {
     std::string xdstemplate (const std::string root, unsigned short run, const std::string suffix="cbf");
+    std::string timestamp();
 }
 
 #endif /* UTILS_H */

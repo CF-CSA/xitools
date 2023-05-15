@@ -19,3 +19,16 @@ std::string Utils::xdstemplate(const std::string root, unsigned short run, const
     outp << '_' << std::setw(2) << std::setfill('0') << run << "????." << suffix;
     return outp.str();
 }
+
+/**
+ * Return a string containing the current date and time - 'ctime' reformatted
+ * with the last carriage return removed
+ */
+std::string Utils::timestamp()
+{
+        std::time_t seconds = time(NULL);
+        std::string now (std::ctime(&seconds));
+        now.erase(now.end()-1);
+
+        return now;
+}

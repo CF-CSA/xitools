@@ -6,14 +6,15 @@
 /**
  *print a short welcome notice
  */
-void hello() {
-    std::printf("!---------------------------------------------------------------!\n"
-                "! sfrmtools:    Read a STOE sum-file,                              !\n"
-                "!               extract experimental parameters and             !\n"
-                "!               print the corresponding XDS parameters.         !\n"
-                "! Copyright:    Tim Gruene, 2023                                !\n"
-                "!---------------------------------------------------------------!\n"
-            );
+std::ostream& hello(std::ostream& outp) {
+    outp << "!---------------------------------------------------------------!\n"
+            << "! sfrmtools:    Read a STOE sum-file,                              !\n"
+            << "!               extract experimental parameters and             !\n"
+            << "!               print the corresponding XDS parameters.         !\n"
+            << "! Copyright:    Tim Gruene, 2023                                !\n"
+            << "!---------------------------------------------------------------!\n"
+            ;
+    return outp;
 }
 
 void usage() {

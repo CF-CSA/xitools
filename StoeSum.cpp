@@ -15,7 +15,15 @@
 
 #include "myExceptions.h"
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
+
+/**
+ * provide the SUM file and extract runs from it
+ * @param sumfile
+ * @param verbosity
+ */
 StoeSum::StoeSum(const std::string& sumfile, unsigned char verbosity):
 sumfile_(sumfile), verbosity_(verbosity) {
     inp_.open(sumfile_);
@@ -164,6 +172,7 @@ void StoeSum::extractRun(const int& run, RunInfo& myrun) {
     }
     
     runs_info_.push_back(myrun);
+    
     // end of runs description
     if (dummy != "Run") {
         runs_ = run;
@@ -204,4 +213,24 @@ std::string StoeSum::xdstemplate(const std::string& masterh5file, int& run) {
     // the end, 'master.h5' is not found, will be added
     xdstempl << "??????.h5";
     return xdstempl.str();
+}
+
+/**
+ * Use stem of path/to/project.sum to create xdstemplate
+ * project_0r????.cbf
+ * @param run
+ * @return 
+ */
+std::string StoeSum::xdstemplate(int run) const {
+    size_t dot = sumfile_.rfind(".sum");
+    std::string my = sumfile_.substr(0, dot);
+    std::ostringstream templ;
+    templ << my << '_' << std::setw(2) << std::setfill('0') << run << "????.cbf";
+    if (verbosity_ > 2) {
+        std::cout << "! Name template for run " << run << ": " << templ.str() 
+                << std::endl;
+    }
+    return templ.str();
+    
+    
 }

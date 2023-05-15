@@ -8,8 +8,10 @@
 #ifndef USAGE_H
 #define	USAGE_H
 
+#include <ostream>
+
 /** print greeting **/
-void hello();
+std::ostream& hello(std::ostream& outp);
 /** print usage instructions **/
 void usage();
 

@@ -30,7 +30,7 @@ verbosity_(0) {
         if (getoption(option, "-o", outdir_, i, argc, argv)) continue;
         if (getoption(option, "-t", xdsinptemplate_, i, argc, argv)) continue;
         if (getoption(option, "-v", verbosity_, i, argc, argv)) continue;
-        if (getoption(option, "-x", paramsfile_, i, argc, argv)) continue; 
+        if (getoption(option, "-x", sumfile_, i, argc, argv)) continue; 
 
         // when reaching this points, unknown option character
         if (option.at(0) == '-') {
