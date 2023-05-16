@@ -59,7 +59,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-static
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}

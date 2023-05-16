@@ -37,6 +37,7 @@ public:
         float nFrames_;
         float two_theta_range_[2];
         float d_range_[2];
+        float T_;
         // flags to know what type of scan we have
         bool phiscan_, omegascan_;
         float pixelsize_; // mm assumed

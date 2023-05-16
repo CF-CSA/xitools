@@ -19,7 +19,7 @@
 
 RunInfo::RunInfo():
 detector_ (Defaults::EIGER2::MODEL),
-omegascan_ (false), phiscan_(false){
+omegascan_ (false), phiscan_(false), T_(100.0){
 }
 
 void RunInfo::applyOffsets(const Params& params) {

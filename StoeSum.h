@@ -39,6 +39,8 @@ private:
     void extractRun(const int& run, RunInfo& myrun);
     void advanceKeyword(const std::string& search);
 
+    // find the last measurement block
+    void findLastBlock();
     int getRuns();
      
 public:

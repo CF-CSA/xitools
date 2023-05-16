@@ -18,28 +18,68 @@
 #include <iomanip>
 #include <sstream>
 
-
 /**
  * provide the SUM file and extract runs from it
  * @param sumfile
  * @param verbosity
  */
-StoeSum::StoeSum(const std::string& sumfile, unsigned char verbosity):
+StoeSum::StoeSum(const std::string& sumfile, unsigned char verbosity) :
 sumfile_(sumfile), verbosity_(verbosity) {
     inp_.open(sumfile_);
     if (!inp_.is_open()) {
-        std::cout << "*** Error: Cannot open STOE sum file " << sumfile_ 
+        std::cout << "*** Error: Cannot open STOE sum file " << sumfile_
                 << std::endl;
         throw myExcepts::FileMissing(sumfile_);
     }
+
+    findLastBlock();
     runs_ = getRuns();
 }
 
-StoeSum::~StoeSum(){
+StoeSum::~StoeSum() {
     if (inp_.is_open()) {
         inp_.close();
     }
 }
+
+/**
+ * go through sum-file, find the last occurence of 'Begin of measurement'
+ * and rewind inp_ to that position.
+ * @return position of measurement block
+ */
+void StoeSum::findLastBlock() {
+    std::streampos mblock(0);
+    std::string dummy;
+    while (!inp_.eof()) {
+        inp_ >> dummy;
+        if (inp_.fail()) {
+            break;
+        }
+        if (dummy != "Begin") {
+            continue;
+        } else { // check if this begin is 'Begin of measurement block 
+            std::string kw2, kw3;
+            inp_ >> kw2 >> kw3;
+            if (inp_.fail() || inp_.eof()) {
+                std::cout << "*** Error: Cannot find line 'Begin of measurement'\n."
+                        << "      Is this a STOE .sum-file?\n";
+                throw myExcepts::Format("Begin of measurement line missing");
+            }
+            if (kw2 == "of" && kw3 == "measurement") { // store this block
+                mblock = inp_.tellg();
+            }
+        }
+    }
+    if (mblock == 0) {
+        std::cout << "*** Error: Cannot find line 'Begin of measurement'\n."
+                << "      Is this a STOE .sum-file?\n";
+        throw myExcepts::Format("Begin of measurement line missing");
+    }
+    inp_.clear();
+    inp_.seekg(mblock);
+
+}
+
 /**
  * Get the number of Runs from sum file. Currently, only one clean measurement is supported,
  * i.e. only one line "Begin of measurement"
@@ -49,30 +89,6 @@ int StoeSum::getRuns() {
     RunInfo myrun;
     std::string dummy;
     char colon;
-    while (!inp_.eof()) {
-        inp_ >> dummy;
-        if (inp_.fail() || inp_.eof()) {
-            std::cout << "*** Error: Cannot find line 'Begin of measurement'\n."
-                    << "      Is this a STOE .sum-file?\n";
-            throw myExcepts::Format("Begin of measurement line missing");
-        }
-        if (dummy != "Begin") {
-            continue;
-        }    
-        std::string kw2, kw3;
-        inp_ >> kw2 >> kw3;
-        if (inp_.fail() || inp_.eof()) {
-            std::cout << "*** Error: Cannot find line 'Begin of measurement'\n."
-                    << "      Is this a STOE .sum-file?\n";
-            throw myExcepts::Format("Begin of measurement line missing");
-        }
-        if (kw2 == "of" && kw3 == "measurement") {
-            break;
-        }
-        else {
-            continue;
-        }
-    }
     try {
         advanceKeyword("Wavelength");
     }
