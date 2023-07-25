@@ -42,8 +42,11 @@ public:
         bool phiscan_, omegascan_;
         float pixelsize_; // mm assumed
         float rotation_x_, rotation_y_, rotation_z_;
+        // matrix to rotate crystal back to omega=0, chi=0, phi=0
+        float zeromatrix_[6];
         
     void rotationaxis();
+    void zeromatrix();
 
 public:
     RunInfo();

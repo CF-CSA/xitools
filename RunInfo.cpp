@@ -86,3 +86,18 @@ void RunInfo::rotationaxis() {
         throw std::logic_error (" ***Error: Crystal rotation about 2theta or chi not supported\n");
     }
 }
+
+/**
+ * Calculate the matrix that rotates the crystal from the starting position of
+ * this run, given omega, chi, and phi, to the zero-position at 
+ * omega = 0, chi = 0, phi = 0
+ * Procedure: 
+ * 1) matrix of -omega, as omega axis is (0 -1 0) in XDS coordinate 
+ * system
+ * 2) matrix for -chi. When omega=0 degree (for STOE Staedivari), chi axis is (0 0 -1)
+ * , direction of beam
+ * 3) matrix for -phi, as finally, with omega=0 and chi=0, phi axis is (0 1 0)
+ */
+void RunInfo::zeromatrix() {
+    
+}
