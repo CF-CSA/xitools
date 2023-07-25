@@ -29,6 +29,7 @@ void RunInfo::applyOffsets(const Params& params) {
     phi_[0]    += params.deltaPhi();
     phi_[1]    += params.deltaPhi();
     chi_       += params.deltaChi();
+    delta_     += params.deltaD();
     
     // once everything is corrected, calculate rotation axis
     rotationaxis();
