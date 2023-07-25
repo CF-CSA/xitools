@@ -15,6 +15,7 @@
 #include "defines.h"
 #include <iostream>
 #include <cmath>
+#include "Mat33.h"
 
 
 RunInfo::RunInfo():
@@ -99,5 +100,6 @@ void RunInfo::rotationaxis() {
  * 3) matrix for -phi, as finally, with omega=0 and chi=0, phi axis is (0 1 0)
  */
 void RunInfo::zeromatrix() {
+    Mat33 M;
     
 }
