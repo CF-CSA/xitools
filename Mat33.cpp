@@ -14,12 +14,36 @@
 #include "Mat33.h"
 
 Mat33::Mat33() {
-    for (int i=0; i <9; ++i) {
+    for (int i = 0; i < 9; ++i) {
         matrix_[i] = 0.0;
     }
 }
 
+Mat33::Mat33(const double& m00, const double& m01, const double& m02,
+        const double& m10, const double& m11, const double& m12,
+        const double& m20, const double& m21, const double& m22) {
+    matrix_[0] = m00;
+    matrix_[1] = m01;
+    matrix_[2] = m02;
+    matrix_[3] = m10;
+    matrix_[4] = m11;
+    matrix_[5] = m12;
+    matrix_[6] = m20;
+    matrix_[7] = m21;
+    matrix_[8] = m22;
+}
 
 Mat33::~Mat33() {
 }
 
+Mat33 operator*(const Mat33& m1, const Mat33& m2) {
+    Mat33 M;
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            for (int i = 0; i < 3; ++i) {
+                M(r, c) += m1(r, i) * m2(i, c);
+            }
+        }
+    }
+    return M;
+}

@@ -31,6 +31,8 @@ public:
     
     double norm2() const { return x_*x_ + y_*y_ + z_*z_;}
     
+    XYZ unit() const;
+    
     XYZ& operator+= (const XYZ& other);
     XYZ& operator*= (const float& s);
     

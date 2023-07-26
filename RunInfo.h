@@ -17,6 +17,7 @@
 #include <cstdlib>
 
 #include "Params.h"
+class Mat33;
 
 
 /**
@@ -29,8 +30,10 @@ public:
         float lambda_;
         float delta_;
         float two_theta_;
+        // 0: start, 1: end angle
         float omega_[2];
         float chi_;
+        // 0: start, 1: end angle
         float phi_[2];
         float deltaAngle_;
         float t_;
@@ -46,7 +49,7 @@ public:
         float zeromatrix_[6];
         
     void rotationaxis();
-    void zeromatrix();
+    Mat33 zeromatrix() const;
 
 public:
     RunInfo();

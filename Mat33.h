@@ -26,7 +26,13 @@ public:
             const double& m20, const double& m21, const double& m22);
     ~Mat33();
 
+    // write access
     double& operator() (unsigned short idx1, unsigned short idx2) {
+        return matrix_[3*idx1+idx2];
+    }
+    
+    // read access
+    const double& operator() (unsigned short idx1, unsigned short idx2) const{
         return matrix_[3*idx1+idx2];
     }
     friend Mat33 operator*(const Mat33& m1, const Mat33& m2);

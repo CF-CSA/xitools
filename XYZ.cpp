@@ -12,6 +12,7 @@
  */
 
 #include <iomanip>
+#include <valarray>
 
 #include "XYZ.h"
 #include "Mat33.h"
@@ -36,9 +37,9 @@ XYZ& XYZ::operator *=(const float& s) {
 
 XYZ operator*(const Mat33& R, const XYZ& xyz) {
     XYZ res;
-    res.x_ = R.matrix_[0] * xyz.x_ + R.matrix_[1] * xyz.y_ + R.matrix_[2] * xyz.z_ + R.matrix_[3];
-    res.y_ = R.matrix_[4] * xyz.x_ + R.matrix_[5] * xyz.y_ + R.matrix_[6] * xyz.z_ + R.matrix_[7];
-    res.z_ = R.matrix_[8] * xyz.x_ + R.matrix_[9] * xyz.y_ + R.matrix_[10] * xyz.z_ + R.matrix_[11];
+    res.x_ = R.matrix_[0] * xyz.x_ + R.matrix_[1] * xyz.y_ + R.matrix_[2] * xyz.z_;
+    res.y_ = R.matrix_[3] * xyz.x_ + R.matrix_[4] * xyz.y_ + R.matrix_[5] * xyz.z_;
+    res.z_ = R.matrix_[6] * xyz.x_ + R.matrix_[7] * xyz.y_ + R.matrix_[8] * xyz.z_;
     return res;
 }
 
@@ -67,4 +68,13 @@ std::ostream& operator<<(std::ostream& out, const XYZ& xyz) {
             << std::setw(6) << std::setprecision(3) << xyz.z_ << ")";
             
     return out;
+}
+
+XYZ XYZ::unit() const {
+    double scale = this->norm2();
+    scale = 1./std::sqrt(scale);
+    const double x = scale*x_;
+    const double y = scale*y_;
+    const double z = scale*z_;
+    return XYZ(x, y, z);
 }
