@@ -92,7 +92,7 @@ void RunInfo::rotationaxis() {
 /**
  * Calculate the matrix that rotates the crystal from the starting position of
  * this run, given omega, chi, and phi, to the zero-position at 
- * omega = 0, chi = 0, phi = 0
+ * omega = 0, chi = 0, phi = 0. Angles should already be radians
  * Procedure: 
  * 1) matrix of -omega, as omega axis is (0 -1 0) in XDS coordinate 
  * system
@@ -103,11 +103,14 @@ void RunInfo::rotationaxis() {
 Mat33 RunInfo::zeromatrix() const{
     Mat33 Z, M;
     // rotate backwards by omega_
-    Z = Utils::rotaxis(-omega_[0], XYZ(0, -1, 0));
+    const double omega = M_PI/180.*omega_[0];
+    Z = Utils::rotaxis(-omega, XYZ(0, -1, 0));
     // rotate backwards by chi_
-    M = Utils::rotaxis(-chi_, XYZ(0, 0, 1));
+    const double chi = M_PI/180.*chi_;
+    M = Utils::rotaxis(-chi, XYZ(0, 0, 1));
     Z = M*Z;
-    M = Utils::rotaxis(-phi_[0], XYZ(0, -1, 0));
+    const double phi = M_PI/180.*phi_[0];
+    M = Utils::rotaxis(-phi, XYZ(0, -1, 0));
     Z = M*Z;
     return Z;    
 }

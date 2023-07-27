@@ -21,7 +21,7 @@ class Mat33;
 
 
 /**
- * Angles are expected in radians, not angles!
+ * Angles are read and stored in degrees, not radians
  */
 class RunInfo {
 public:

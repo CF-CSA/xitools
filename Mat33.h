@@ -26,6 +26,9 @@ public:
             const double& m20, const double& m21, const double& m22);
     ~Mat33();
 
+    // return the transose of this matrix
+    Mat33 transpose() const;
+    
     // write access
     double& operator() (unsigned short idx1, unsigned short idx2) {
         return matrix_[3*idx1+idx2];

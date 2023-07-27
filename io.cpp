@@ -17,6 +17,7 @@
 
 #include <sys/stat.h>
 #include <sstream>
+#include <c++/12/iomanip>
 
 /**
  * Create the output directory and return its name
@@ -84,9 +85,27 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     Mat33 Z = run.zeromatrix();
     outp << "! Rotation matrix to reset unit cell axes to standard orientation\n"
             << "! at omega = 0, chi = 0. phi = 0:\n"
-            << "! (" << Z(0,0) << " " << Z(0, 1) << " " << Z(0,2) << '\n'
-            << "! (" << Z(1,0) << " " << Z(1, 1) << " " << Z(1,2) << '\n'
-            << "! (" << Z(2,0) << " " << Z(2, 1) << " " << Z(2,2) << ")\n";
+            << "!  " 
+            << std::setprecision(5) << std::setw(9)
+            << Z(0,0) << std::setw(9) << Z(0, 1) << std::setw(9) << Z(0,2) << "\n"
+            << "!  " 
+            << std::setprecision(5) << std::setw(9)
+            << Z(1,0) << std::setw(9) << Z(1, 1) << std::setw(9) << Z(1,2) << "\n"
+            << "!  " 
+            << std::setprecision(5) << std::setw(9)
+            << Z(2,0) << std::setw(9) << Z(2, 1) << std::setw(9) << Z(2,2) << " \n"
+            << "! Ensure that STARTING_ANGLE=     0.000 and STARTING_FRAME= is set to \n"
+            << "! the first number in DATA_RANGE= or omit 'STARTING_ANGLE entirely.\n"
+                        << "! at omega = 0, chi = 0. phi = 0 (python syntax):\n"
+            << "!  Zero-Matrix in python syntax: \n" 
+            << "![["
+            << std::setprecision(5) << std::setw(9)
+            << Z(0,0) << ',' << std::setw(9) << Z(0, 1) << ',' << std::setw(9) << Z(0,2) << " ], ["
+            << std::setprecision(5) << std::setw(9)
+            << Z(1,0) << ',' << std::setw(9) << Z(1, 1) << ',' << std::setw(9) << Z(1,2) << " ], ["
+            << std::setprecision(5) << std::setw(9)
+            << Z(2,0) << ',' << std::setw(9) << Z(2, 1) << ','  << std::setw(9) << Z(2,2) << " ]]\n";
+
     if (run.omegascan_) {
         outp << "! Rotation about omega axis\n";
     }

@@ -35,12 +35,14 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/Mat33.o \
 	${OBJECTDIR}/Params.o \
 	${OBJECTDIR}/Parser.o \
 	${OBJECTDIR}/RunInfo.o \
 	${OBJECTDIR}/StoeSum.o \
 	${OBJECTDIR}/Usage.o \
 	${OBJECTDIR}/Utils.o \
+	${OBJECTDIR}/XYZ.o \
 	${OBJECTDIR}/io.o \
 	${OBJECTDIR}/main.o
 
@@ -68,6 +70,11 @@ LDLIBSOPTIONS=-static
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/xitools: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/xitools ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/Mat33.o: Mat33.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Mat33.o Mat33.cpp
 
 ${OBJECTDIR}/Params.o: Params.cpp
 	${MKDIR} -p ${OBJECTDIR}
@@ -98,6 +105,11 @@ ${OBJECTDIR}/Utils.o: Utils.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/Utils.o Utils.cpp
+
+${OBJECTDIR}/XYZ.o: XYZ.cpp
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2 -std=c++14 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/XYZ.o XYZ.cpp
 
 ${OBJECTDIR}/io.o: io.cpp
 	${MKDIR} -p ${OBJECTDIR}

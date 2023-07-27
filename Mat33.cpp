@@ -36,6 +36,13 @@ Mat33::Mat33(const double& m00, const double& m01, const double& m02,
 Mat33::~Mat33() {
 }
 
+Mat33 Mat33::transpose() const {
+    const Mat33 T = Mat33(matrix_[0], matrix_[3], matrix_[6], 
+                          matrix_[1], matrix_[4], matrix_[7],
+                          matrix_[2], matrix_[5], matrix_[8]);
+    return T;
+}
+
 Mat33 operator*(const Mat33& m1, const Mat33& m2) {
     Mat33 M;
     for (int r = 0; r < 3; ++r) {
