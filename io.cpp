@@ -7,6 +7,7 @@
 #include "io.h"
 #include "myExceptions.h"
 #include "defines.h"
+#include "Mat33.h"
 //#include "Utils.h"
 #include <iostream>
 #include <iomanip>
@@ -77,6 +78,15 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     outp << "! Data extracted for run number " << run.run_number_ << "\n";
     outp << "! 2theta = " << std::setprecision(1) << std::fixed << std::setw(6) 
                 << run.two_theta_ << "deg, assuming vertical swing axis\n";
+    outp << "! omega, chi, phi = " << run.omega_[0] << ", " 
+            << run.chi_ << ", " 
+            << run.phi_[0] << "\n";
+    Mat33 Z = run.zeromatrix();
+    outp << "! Rotation matrix to reset unit cell axes to standard orientation\n"
+            << "! at omega = 0, chi = 0. phi = 0:\n"
+            << "! (" << Z(0,0) << " " << Z(0, 1) << " " << Z(0,2) << '\n'
+            << "! (" << Z(1,0) << " " << Z(1, 1) << " " << Z(1,2) << '\n'
+            << "! (" << Z(2,0) << " " << Z(2, 1) << " " << Z(2,2) << ")\n";
     if (run.omegascan_) {
         outp << "! Rotation about omega axis\n";
     }

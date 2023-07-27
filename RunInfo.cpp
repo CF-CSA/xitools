@@ -15,6 +15,8 @@
 #include "defines.h"
 #include <iostream>
 #include <cmath>
+#include "Mat33.h"
+#include "Utils.h"
 
 
 RunInfo::RunInfo():
@@ -96,8 +98,16 @@ void RunInfo::rotationaxis() {
  * system
  * 2) matrix for -chi. When omega=0 degree (for STOE Staedivari), chi axis is (0 0 -1)
  * , direction of beam
- * 3) matrix for -phi, as finally, with omega=0 and chi=0, phi axis is (0 1 0)
+ * 3) matrix for -phi, as finally, with omega=0 and chi=0, phi axis is (0 -1 0)
  */
-void RunInfo::zeromatrix() {
-    
+Mat33 RunInfo::zeromatrix() const{
+    Mat33 Z, M;
+    // rotate backwards by omega_
+    Z = Utils::rotaxis(-omega_[0], XYZ(0, -1, 0));
+    // rotate backwards by chi_
+    M = Utils::rotaxis(-chi_, XYZ(0, 0, 1));
+    Z = M*Z;
+    M = Utils::rotaxis(-phi_[0], XYZ(0, -1, 0));
+    Z = M*Z;
+    return Z;    
 }
