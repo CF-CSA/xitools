@@ -22,6 +22,10 @@ deltaChi_(0.0),
 deltaOmega_(0.0),
 deltaPhi_(0.0),
 deltaD_(0.0),
+nx_(1029),
+ny_(513),
+qx_(0.075),
+qy_(0.075),
 wavelength_(-1),
 isset_detector_distance_(true),
 isset_exposure_time_(true),
@@ -129,6 +133,10 @@ void Params::getoffsets() {
         getvalues("DELTA_ORGX=", 1, &delta_orgx_);
         getvalues("DELTA_ORGY=", 1, &delta_orgy_);
         getvalues("DETECTOR=", 1, &detector_name_);
+        getvalues("NX=", 1, &nx_);
+        getvalues("NY=", 1, &ny_);
+        getvalues("QX=", 1, &qx_);
+        getvalues("QY=", 1, &qy_);
     } catch (myExcepts::Format& e) {
         // offsets may not be given, thus ignore
     }

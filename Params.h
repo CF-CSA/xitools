@@ -35,9 +35,12 @@ private:
     float deltaChi_;
     float deltaPhi_;
     float deltaD_;
-    
     float delta_orgx_, delta_orgy_;
+    
+    //! detector properties
     std::string detector_name_;
+    short nx_, ny_;
+    float qx_, qy_;
     
     float wavelength_;
     
@@ -104,6 +107,11 @@ public:
     float deltaD() const { return deltaD_; }
     float delta_orgx() const { return delta_orgx_; }
     float delta_orgy() const { return delta_orgy_; }
+    
+    short nx() const { return nx_; }
+    short ny() const { return ny_; }
+    float qx() const { return qx_; }
+    float qy() const { return qy_; }
     
     float wavelength() const { return wavelength_; }
     

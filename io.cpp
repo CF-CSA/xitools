@@ -17,7 +17,7 @@
 
 #include <sys/stat.h>
 #include <sstream>
-#include <c++/12/iomanip>
+#include <iomanip>
 
 /**
  * Create the output directory and return its name
@@ -50,8 +50,8 @@ void io::out::xdsout(const Params& params) {
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
             << '\n'
-            << " NX=" << " 1030" << " NY=" << " 514\n"
-            << " QX= 0.075 QY= 0.075 \n"
+            << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
+            << " QX= " << params.qx() << " QY= " << params.qy() << "\n"
             << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n'
             << " TRUSTED_REGION=  0.00  1.5\n" 
             // refine defaults for IDXREF, CORRECT, but nothing for INTEGRATIO
