@@ -25,7 +25,8 @@ namespace io {
         void xdsout(const Params& params);
 
         //! print parameters from a RunInfo
-        std::ostream& xdsout(std::ostream& outp, const RunInfo& runinfo, const std::string& xdstempl);
+        std::ostream& xdsout(std::ostream& outp, const RunInfo& runinfo, 
+				const Params& params, const std::string& xdstempl);
     }
 }
 

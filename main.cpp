@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
             std::string dirname = io::out::outdir("run", r);
             std::ofstream outp (dirname+"/XDS.INP");
             hello(outp);
-            io::out::xdsout(outp, run, templ);
+            io::out::xdsout(outp, run, params, templ);
             outp.close();
         }
     } else {
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
         run.applyOffsets(params);
             std::string dirname = io::out::outdir("run", r);
             std::ofstream outp (dirname+"/XDS.INP");
-        io::out::xdsout(outp, run, templ);
+        io::out::xdsout(outp, run, params, templ);
         outp.close();
     }// masterfile is empty, and run number explicitly given 
 

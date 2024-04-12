@@ -49,8 +49,12 @@ void io::out::xdsout(const Params& params) {
                 << " DATA_RANGE_FIXED_SCALE_FACTOR= 1 1800 1.0\n"
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
-            << '\n'
-            << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
+            << '\n';
+	if (params.nx() < 0 || params.ny() < 0) {
+	 std::cout << "*** Error: NX not supplied in parameter file.\n";
+	 throw myExcepts::Usage("NX and NY must be specified");
+	 }
+          std::cout << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
             << " QX= " << params.qx() << " QY= " << params.qy() << "\n"
             << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n'
             << " TRUSTED_REGION=  0.00  1.5\n" 
@@ -66,11 +70,11 @@ void io::out::xdsout(const Params& params) {
         std::cout << " DELPHI= 25\n";
         std::cout << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
         std::cout << " FRACTION_OF_POLARIZATION=0.50\n";
-
-        
 }
-std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std::string& xdstempl) {
-        // assumes detector swing axis always vertical
+
+std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, 
+	const Params& params, const std::string& xdstempl) {
+    // assumes detector swing axis always vertical
 
     /*
      some comments
@@ -119,9 +123,20 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     outp << " DETECTOR= " << run.detector_ << '\n'
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
-            << '\n'
-            << " NX=" << " 1031" << " NY=" << " 515"
-            << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
+            << '\n';
+	    if ( params.nx() < 0) {
+	     outp << " NX= " << run.nx_;
+	    }
+	    else {
+	     outp << " NX= " << params.nx();
+	    }
+	    if ( params.ny() < 0) {
+	     outp << " NY= " << run.ny_ << '\n';
+	    }
+	    else {
+	     outp << " NY= " << params.ny() << '\n';
+	    }
+    outp << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
             << "\n";
     
     outp << " TRUSTED_REGION=  0.00  1.5\n" 
@@ -165,7 +180,8 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     outp << " ROTATION_AXIS= " << run.rotation_x_ << " " << run.rotation_y_
             << " " << run.rotation_z_ << "\n";
 
-    outp << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
+    outp << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n';
+    // outp << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
     outp << " DETECTOR_DISTANCE= " << std::setprecision(3) << run.delta_ << " !(mm)\n";
     
     outp << '\n';
