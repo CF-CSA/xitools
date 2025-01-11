@@ -43,6 +43,7 @@ public:
         float T_;
         // flags to know what type of scan we have
         bool phiscan_, omegascan_;
+	short nx_, ny_; 
         float pixelsize_; // mm assumed
         float rotation_x_, rotation_y_, rotation_z_;
         // matrix to rotate crystal back to omega=0, chi=0, phi=0

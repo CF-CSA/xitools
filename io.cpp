@@ -120,7 +120,7 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
             << '\n'
-            << " NX=" << " 1031" << " NY=" << " 515"
+            << " NX= " << run.nx_  << " NY= " << run.ny_ << "\n"
             << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
             << "\n";
     
