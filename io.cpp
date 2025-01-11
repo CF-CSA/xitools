@@ -87,8 +87,9 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run,
             << run.chi_ << ", " 
             << run.phi_[0] << "\n";
     Mat33 Z = run.zeromatrix();
-    outp << "! Rotation matrix to reset unit cell axes to standard orientation\n"
+    outp << "! Rotation matrix R to reset unit cell axes to standard orientation\n"
             << "! at omega = 0, chi = 0. phi = 0:\n"
+            << "! R * [ UNIT_CELL_A-AXIS ^T UNIT_CELL_B-AXIS^T UNIT_CELL_C-AXIS^T ]\n"
             << "!  " 
             << std::setprecision(5) << std::setw(9)
             << Z(0,0) << std::setw(9) << Z(0, 1) << std::setw(9) << Z(0,2) << "\n"
@@ -100,7 +101,6 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run,
             << Z(2,0) << std::setw(9) << Z(2, 1) << std::setw(9) << Z(2,2) << " \n"
             << "! Ensure that STARTING_ANGLE=     0.000 and STARTING_FRAME= is set to \n"
             << "! the first number in DATA_RANGE= or omit 'STARTING_ANGLE entirely.\n"
-                        << "! at omega = 0, chi = 0. phi = 0 (python syntax):\n"
             << "!  Zero-Matrix in python syntax: \n" 
             << "![["
             << std::setprecision(5) << std::setw(9)
@@ -187,7 +187,7 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run,
     outp << '\n';
     //! STOE tuns seem to  always start at 1
     outp << " NAME_TEMPLATE_OF_DATA_FRAMES=" << "../" << xdstempl << '\n';
-    outp << " DATA_RANGE= " << 1 << " " << run.numframes() +1<< "\n";
+    outp << " DATA_RANGE= " << 1 << " " << run.numframes()<< "\n";
     outp << '\n';
     outp << " BEAM_DIVERGENCE=   0.93746  BEAM_DIVERGENCE_E.S.D.=   0.09375" << '\n'
          << " REFLECTING_RANGE=  0.62062  REFLECTING_RANGE_E.S.D.=  0.08866" << '\n';

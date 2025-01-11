@@ -37,7 +37,7 @@ public:
         float phi_[2];
         float deltaAngle_;
         float t_;
-        float nFrames_;
+        short nFrames_;
         float two_theta_range_[2];
         float d_range_[2];
         float T_;
@@ -63,7 +63,7 @@ public:
     float totalAngle() const;
     
     // return number of frames
-    int numframes() const { return (int) totalAngle()/deltaAngle_; }
+    int numframes() const { return nFrames_; }
     
 };
 
