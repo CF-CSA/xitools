@@ -153,13 +153,22 @@ void StoeSum::advanceKeyword(const std::string& keyword) {
         }
     }
 }
-
+/**
+ * expects inp_ to be at the correct position at
+ * '2Theta : float' inside .sum file
+ * @param run
+ * @param myrun
+ */
 void StoeSum::extractRun(const int& run, RunInfo& myrun) {
     std::string dummy;
     char c;
     float number;
     myrun.run_number_ = run;
     inp_ >> dummy >> c >> myrun.two_theta_; // this should be '2Theta', otherwise unexpected format
+    if (dummy != "2Theta") {
+        std::cout << "*** Error: unexpected format of .sum file\n";
+        throw myExcepts::Format("Unexpected .sum format");
+    }
     inp_ >> dummy >> dummy >> c >> number >> c; 
     myrun.omega_[0] = number;
     // if c == '-': range, if 'C': chi value

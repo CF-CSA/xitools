@@ -49,8 +49,12 @@ void io::out::xdsout(const Params& params) {
                 << " DATA_RANGE_FIXED_SCALE_FACTOR= 1 1800 1.0\n"
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
-            << '\n'
-            << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
+            << '\n';
+	if (params.nx() < 0 || params.ny() < 0) {
+	 std::cout << "*** Error: NX not supplied in parameter file.\n";
+	 throw myExcepts::Usage("NX and NY must be specified");
+	 }
+          std::cout << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
             << " QX= " << params.qx() << " QY= " << params.qy() << "\n"
             << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n'
             << " TRUSTED_REGION=  0.00  1.5\n" 
@@ -66,11 +70,11 @@ void io::out::xdsout(const Params& params) {
         std::cout << " DELPHI= 25\n";
         std::cout << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
         std::cout << " FRACTION_OF_POLARIZATION=0.50\n";
-
-        
 }
-std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std::string& xdstempl) {
-        // assumes detector swing axis always vertical
+
+std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, 
+	const Params& params, const std::string& xdstempl) {
+    // assumes detector swing axis always vertical
 
     /*
      some comments
@@ -83,8 +87,9 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
             << run.chi_ << ", " 
             << run.phi_[0] << "\n";
     Mat33 Z = run.zeromatrix();
-    outp << "! Rotation matrix to reset unit cell axes to standard orientation\n"
+    outp << "! Rotation matrix R to reset unit cell axes to standard orientation\n"
             << "! at omega = 0, chi = 0. phi = 0:\n"
+            << "! R * [ UNIT_CELL_A-AXIS ^T UNIT_CELL_B-AXIS^T UNIT_CELL_C-AXIS^T ]\n"
             << "!  " 
             << std::setprecision(5) << std::setw(9)
             << Z(0,0) << std::setw(9) << Z(0, 1) << std::setw(9) << Z(0,2) << "\n"
@@ -96,7 +101,6 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
             << Z(2,0) << std::setw(9) << Z(2, 1) << std::setw(9) << Z(2,2) << " \n"
             << "! Ensure that STARTING_ANGLE=     0.000 and STARTING_FRAME= is set to \n"
             << "! the first number in DATA_RANGE= or omit 'STARTING_ANGLE entirely.\n"
-                        << "! at omega = 0, chi = 0. phi = 0 (python syntax):\n"
             << "!  Zero-Matrix in python syntax: \n" 
             << "![["
             << std::setprecision(5) << std::setw(9)
@@ -119,9 +123,20 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     outp << " DETECTOR= " << run.detector_ << '\n'
             << " OVERLOAD= " << (1<<20)-1
             << " MINIMUM_VALID_PIXEL_VALUE= " << 0
-            << '\n'
-            << " NX= " << run.nx_  << " NY= " << run.ny_ << "\n"
-            << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
+            << '\n';
+	    if ( params.nx() < 0) {
+	     outp << " NX= " << run.nx_;
+	    }
+	    else {
+	     outp << " NX= " << params.nx();
+	    }
+	    if ( params.ny() < 0) {
+	     outp << " NY= " << run.ny_ << '\n';
+	    }
+	    else {
+	     outp << " NY= " << params.ny() << '\n';
+	    }
+    outp << " QX=" << std::fixed << std::setprecision(4) << run.pixelsize_ << " QY=" << run.pixelsize_
             << "\n";
     
     outp << " TRUSTED_REGION=  0.00  1.5\n" 
@@ -165,13 +180,14 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run, const std:
     outp << " ROTATION_AXIS= " << run.rotation_x_ << " " << run.rotation_y_
             << " " << run.rotation_z_ << "\n";
 
-    outp << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
+    outp << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n';
+    // outp << " ORGX= " << 515 << " ORGY= " << 257 << "\n";
     outp << " DETECTOR_DISTANCE= " << std::setprecision(3) << run.delta_ << " !(mm)\n";
     
     outp << '\n';
     //! STOE tuns seem to  always start at 1
     outp << " NAME_TEMPLATE_OF_DATA_FRAMES=" << "../" << xdstempl << '\n';
-    outp << " DATA_RANGE= " << 1 << " " << run.numframes() +1<< "\n";
+    outp << " DATA_RANGE= " << 1 << " " << run.numframes()<< "\n";
     outp << '\n';
     outp << " BEAM_DIVERGENCE=   0.93746  BEAM_DIVERGENCE_E.S.D.=   0.09375" << '\n'
          << " REFLECTING_RANGE=  0.62062  REFLECTING_RANGE_E.S.D.=  0.08866" << '\n';

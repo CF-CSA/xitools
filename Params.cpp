@@ -22,10 +22,12 @@ deltaChi_(0.0),
 deltaOmega_(0.0),
 deltaPhi_(0.0),
 deltaD_(0.0),
-nx_(1029),
-ny_(513),
-qx_(0.075),
-qy_(0.075),
+delta_orgx_(0.0),
+delta_orgy_(0.0),
+nx_(-1),
+ny_(-1),
+qx_(-1),
+qy_(-1),
 wavelength_(-1),
 isset_detector_distance_(true),
 isset_exposure_time_(true),
@@ -74,11 +76,6 @@ offsetsfile_(offsetsfile),
         readparamfile(offsetsfile_);
         getparams();
     }
-    // apply offsets
-    omega_ += deltaOmega_;
-    twotheta_ += delta2Theta_;
-    phi_ += deltaPhi_;
-    chi_ += deltaChi_;
 }
 
 void Params::readparamfile(const std::string& inpfile) {
@@ -129,9 +126,9 @@ void Params::getoffsets() {
         getvalues("DELTA2THETA=", 1, &delta2Theta_);
         getvalues("DELTAPHI=", 1, &deltaPhi_);
         getvalues("DELTACHI=", 1, &deltaChi_);
-        getvalues("DELTA_D=", 1, &deltaD_);
-        getvalues("DELTA_ORGX=", 1, &delta_orgx_);
-        getvalues("DELTA_ORGY=", 1, &delta_orgy_);
+        getvalues("DELTAD=", 1, &deltaD_);
+        getvalues("DELTAORGX=", 1, &delta_orgx_);
+        getvalues("DELTAORGY=", 1, &delta_orgy_);
         getvalues("DETECTOR=", 1, &detector_name_);
         getvalues("NX=", 1, &nx_);
         getvalues("NY=", 1, &ny_);
