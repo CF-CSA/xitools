@@ -36,6 +36,7 @@ private:
     float deltaPhi_;
     float deltaD_;
     float delta_orgx_, delta_orgy_;
+    float deltaS0_[3];
     
     //! detector properties
     std::string detector_name_;
