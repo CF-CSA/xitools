@@ -24,7 +24,6 @@ deltaPhi_(0.0),
 deltaD_(0.0),
 delta_orgx_(0.0),
 delta_orgy_(0.0),
-deltaS0_ ({0.0, 0.0, 0.0}),
 nx_(-1),
 ny_(-1),
 qx_(-1),
@@ -37,6 +36,10 @@ isset_data_range_(true),
 isset_frame_time_(true),
 isset_sweep_(true),
 isset_data_template_(true) {
+
+deltaS0_[0] = 0.0;
+deltaS0_[1] = 0.0;
+deltaS0_[2] = 0.0;
 }
 
 /**
@@ -130,7 +133,7 @@ void Params::getoffsets() {
         getvalues("DELTAD=", 1, &deltaD_);
         getvalues("DELTAORGX=", 1, &delta_orgx_);
         getvalues("DELTAORGY=", 1, &delta_orgy_);
-        getvalues("DELTAS0=", 3, &deltaS0_);
+        getvalues("DELTAS0=", 3, deltaS0_);
         getvalues("DETECTOR=", 1, &detector_name_);
         getvalues("NX=", 1, &nx_);
         getvalues("NY=", 1, &ny_);
