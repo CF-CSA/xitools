@@ -56,7 +56,7 @@ void io::out::xdsout(const Params& params) {
 	 }
           std::cout << " NX= " << params.nx()  << " NY= " << params.ny() << "\n"
             << " QX= " << params.qx() << " QY= " << params.qy() << "\n"
-            << " ORGX= " << 0.5*1030 + params.delta_orgx() << " ORGY= " << 514/2 + params.delta_orgy() << '\n'
+            << " ORGX= " << 0.5*params.nx() + params.delta_orgx() << " ORGY= " << 0.5*params.ny() + params.delta_orgy() << '\n'
             << " TRUSTED_REGION=  0.00  1.5\n" 
             // refine defaults for IDXREF, CORRECT, but nothing for INTEGRATIO
             << "! REFINE(IDXREF)=  POSITION BEAM AXIS ORIENTATION CELL\n"
