@@ -17,6 +17,7 @@
 #include <string>
 #include <list>
 #include <stdexcept>
+#include <array>
 
 
 class Params {
@@ -36,7 +37,7 @@ private:
     float deltaPhi_;
     float deltaD_;
     float delta_orgx_, delta_orgy_;
-    float deltaS0_[3];
+    std::array<float,3> deltaS0_;
     
     //! detector properties
     std::string detector_name_;
@@ -61,7 +62,7 @@ private:
     
     // beam positions at 2theta = 0, pixels
     float beamx0_, beamy0_;
-    
+
     // optional keywords get a flag whether they are set
     bool isset_detector_distance_;
     bool isset_exposure_time_;
@@ -124,6 +125,10 @@ public:
     
     float beamx0() const { return beamx0_; }
     float beamy0() const { return beamy0_; }
+
+    // incident beam directions
+    std::array<float, 3> deltaS0() const { return deltaS0_;}
+    
     
     float oscillation_width() const;
     float rotdir() const;

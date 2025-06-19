@@ -68,7 +68,10 @@ void io::out::xdsout(const Params& params) {
         std::cout << " JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
         std::cout << " SNRC= 50\n\n";
         std::cout << " DELPHI= 25\n";
-        std::cout << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
+        std::cout << " INCIDENT_BEAM_DIRECTION= " 
+		<< 0.0+params.deltaS0()[0] << " "
+		<< 0.0+params.deltaS0()[1] << " "
+		<< 1.0+params.deltaS0()[2] << '\n';
         std::cout << " FRACTION_OF_POLARIZATION=0.50\n";
 }
 

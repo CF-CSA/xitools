@@ -133,7 +133,6 @@ void Params::getoffsets() {
         getvalues("DELTAD=", 1, &deltaD_);
         getvalues("DELTAORGX=", 1, &delta_orgx_);
         getvalues("DELTAORGY=", 1, &delta_orgy_);
-        getvalues("DELTAS0=", 3, deltaS0_);
         getvalues("DETECTOR=", 1, &detector_name_);
         getvalues("NX=", 1, &nx_);
         getvalues("NY=", 1, &ny_);
@@ -142,6 +141,16 @@ void Params::getoffsets() {
     } catch (myExcepts::Format& e) {
         // offsets may not be given, thus ignore
     }
+    try {
+    	float deltaS0[3];
+        getvalues("DELTAS0=", 3, deltaS0);
+	deltaS0_[0] = deltaS0[0];
+	deltaS0_[1] = deltaS0[1];
+	deltaS0_[2] = deltaS0[2];
+    } catch (myExcepts::Format& e) {
+        // offsets may not be given, thus ignore
+    }
+
 }
 
 /**
