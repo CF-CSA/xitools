@@ -163,7 +163,10 @@ std::ostream& io::out::xdsout(std::ostream& outp, const RunInfo& run,
     outp << " JOB= XYCORR INIT COLSPOT IDXREF DEFPIX INTEGRATE CORRECT\n";
     outp << " SNRC= 50\n\n";
     outp << " DELPHI= 25\n";
-    outp << " INCIDENT_BEAM_DIRECTION=0.0 0.0 1.0\n";
+    outp << " INCIDENT_BEAM_DIRECTION= " 
+	<< 0.0+params.deltaS0()[0] << " "
+	<< 0.0+params.deltaS0()[1] << " "
+	<< 1.0+params.deltaS0()[2] << '\n';
     outp << " FRACTION_OF_POLARIZATION=0.50\n";
 
     outp << " DIRECTION_OF_DETECTOR_X-AXIS= "
