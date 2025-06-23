@@ -147,7 +147,6 @@ void Params::getoffsets() {
 	deltaS0_[0] = deltaS0[0];
 	deltaS0_[1] = deltaS0[1];
 	deltaS0_[2] = deltaS0[2];
-	deltaS0[1] << ' ' << deltaS0[2] << std::endl;
     } catch (myExcepts::Format& e) {
         // offsets may not be given, thus ignore
     }
