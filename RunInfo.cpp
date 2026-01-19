@@ -32,6 +32,10 @@ void RunInfo::applyOffsets(const Params& params) {
     phi_[1]    += params.deltaPhi();
     chi_       += params.deltaChi();
     delta_     += params.deltaD();
+
+    // overwrite settings if set
+    if (params.qx() > 0) pixelsize_ = params.qx();
+    if (params.qy() > 0) pixelsize_ = params.qy();
     
     // once everything is corrected, calculate rotation axis
     rotationaxis();
