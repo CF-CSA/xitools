@@ -13,6 +13,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -27,9 +29,10 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}"  -O /xtal/Integration/XDS/CCSA-templates/Stadivari_Offsets-CuKa.PARAMS -x data/Tyrosinasen_in_Feuchtgebieten.sum -v3</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}"  -O /xtal/Integration/XDS/CCSA-templates/Stadivari_Offsets-MoKa.PARAMS -x data/THMA_OX.sum  -v3</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"  -O /xtal/Integration/XDS/CCSA-templates/Stadivari_Offsets-CuKa.PARAMS   -v3 -z -x Flha514.sum</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}"  -O /xtal/Integration/XDS/CCSA-templates/Stadivari_Offsets-MoKa.PARAMS -x data/THMA_OX.sum  -v3</runcommand>
-        <rundir>/home/tg/univie/instruments/stadivari/data/Galanski/2023/THMA_OX/xtal-03</rundir>
+        <runcommand>"${OUTPUT_PATH}"  -O /xtal/Integration/XDS/CCSA-templates/Stadivari_Offsets-CuKa.PARAMS   -v3 -z -x Flha514.sum</runcommand>
+        <rundir>/home/tg/univie/projects/dev/tests/xitools/Flha514</rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>
         <remove-instrumentation>0</remove-instrumentation>

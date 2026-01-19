@@ -29,6 +29,8 @@ private:
     unsigned short stoerun_;
     // output directory (default: current dir/run??)
     std::string outdir_;
+    // switch to read geometry from Optimizer instead of measurement listing
+    bool fromoptimiser_;
     // verbosity level
     unsigned char verbosity_;
     
@@ -47,6 +49,7 @@ public:
     std::string offsetsfile() const { return offsetsfile_; }
     std::string xdsinptemplatefile() const { return xdsinptemplate_; }
     unsigned short stoerun() const { return stoerun_; }
+    bool fromoptimiser() const { return fromoptimiser_; }
     unsigned char verbosity() const { return verbosity_; }
 };
 

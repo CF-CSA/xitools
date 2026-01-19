@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    StoeSum stoesumfile(parser->sumfile(), parser->verbosity());
+    StoeSum stoesumfile(parser->sumfile(), parser->verbosity(), parser->fromoptimiser());
     Params params;
     if (!parser->offsetsfile().empty()) {
         params.getoffsets(parser->offsetsfile());

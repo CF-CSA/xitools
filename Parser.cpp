@@ -16,6 +16,7 @@ offsetsfile_(""),
 xdsinptemplate_(""),
 stoerun_(0),
         outdir_("./"),
+        fromoptimiser_(false),
 verbosity_(0) {
     
     for (int i = 1; i < argc; ++i) {
@@ -23,6 +24,10 @@ verbosity_(0) {
         if (option.substr(0, 2) == "-h" || option.substr(0, 2) == "-?") {
             throw myExcepts::Usage("Help message");
             return;
+        }
+        if (option.substr(0, 2) == "-z") {
+            fromoptimiser_ = true;
+            continue;
         }
         if (getoption(option, "-p", paramsfile_, i, argc, argv)) continue;
         if (getoption(option, "-O", offsetsfile_, i, argc, argv)) continue;

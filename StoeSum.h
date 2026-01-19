@@ -42,9 +42,13 @@ private:
     // find the last measurement block
     void findLastBlock();
     int getRuns();
+    
+    // alternatively, find Optimizer Block and read info from there
+    void findOptimiser();
+    int getRunsFromOptimiserList();
      
 public:
-    StoeSum(const std::string& sumfile, unsigned char verbosity);
+    StoeSum(const std::string& sumfile, unsigned char verbosity, bool fromoptmizer = false);
     ~StoeSum();
     
     size_t numRuns() const { return runs_; }

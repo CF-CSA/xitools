@@ -27,6 +27,7 @@ void usage() {
               << "!         OPTIONS:                                              !\n"
 	      << "!        -O offsets.txt: read offsets from file 'offsets.txt'   !\n"
 	      << "!        -r RUNNUM     :  print XDS parameters for run RUNNUM\n"
+              << "!        -z            : get run info from Optimiser section in sum file\n"
               << "!        -h / -?: print this help message and exit              !\n"
 	      << "\n";
    

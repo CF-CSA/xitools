@@ -22,8 +22,9 @@
  * provide the SUM file and extract runs from it
  * @param sumfile
  * @param verbosity
+ * @param fromoptimiser if true, read run list from Run Optimizer
  */
-StoeSum::StoeSum(const std::string& sumfile, unsigned char verbosity) :
+StoeSum::StoeSum(const std::string& sumfile, unsigned char verbosity, bool fromoptimiser) :
 sumfile_(sumfile), verbosity_(verbosity) {
     inp_.open(sumfile_);
     if (!inp_.is_open()) {
@@ -32,8 +33,16 @@ sumfile_(sumfile), verbosity_(verbosity) {
         throw myExcepts::FileMissing(sumfile_);
     }
 
-    findLastBlock();
-    runs_ = getRuns();
+    // if in recovery mode, read runs from Optimizer list
+    if (fromoptimiser == true) {
+        findOptimiser();
+        runs_ = getRunsFromOptimiserList();
+        
+    }
+    else {
+        findLastBlock();
+        runs_ = getRuns();
+    }
 }
 
 StoeSum::~StoeSum() {
@@ -78,6 +87,42 @@ void StoeSum::findLastBlock() {
     inp_.clear();
     inp_.seekg(mblock);
 
+}
+/**
+ * got through sum-file and find 'Run Optimizer STADIVARI' as start of optimiser block
+ */
+void StoeSum::findOptimiser() {
+    std::streampos mblock(0);
+    std::string dummy;
+    while (!inp_.eof()) {
+        inp_ >> dummy;
+        if (inp_.fail()) {
+            break;
+        }
+        if (dummy != "Run") {
+            continue;
+        } else { // check if this begin is 'Begin of measurement block 
+            std::string kw2, kw3;
+            inp_ >> kw2 >> kw3;
+            if (inp_.fail() || inp_.eof()) {
+                std::cout << "*** Error: Cannot find line 'Run Frames S.'\n."
+                        << "      Is this a STOE .sum-file?\n";
+                throw myExcepts::Format("Begin of optimised run list missing");
+            }
+            if (kw2 == "Optimizer" && kw3 == "STADIVARI") { // store this block
+                mblock = inp_.tellg();
+            }
+        }
+    }
+    if (mblock == 0) {
+        std::cout << "*** Error: Cannot find line 'Begin of measurement'\n."
+                << "      Is this a STOE .sum-file?\n";
+        throw myExcepts::Format("Begin of measurement line missing");
+    }
+    inp_.clear();
+    inp_.seekg(mblock);
+
+    
 }
 
 /**
@@ -146,6 +191,9 @@ void StoeSum::advanceKeyword(const std::string& keyword) {
     std::string dummy;
     while (dummy != keyword) {
             inp_ >> dummy;
+            if (verbosity_ > 1) {
+                std::cout << "---> Keyword: " << keyword << ", found: " << dummy << std::endl;
+            }
                     if (inp_.fail() || inp_.eof()) {
             std::cout << "*** Error: Cannot find keyword " << keyword << "\n."
                     << "      Is this a STOE .sum-file?\n";
@@ -257,5 +305,88 @@ std::string StoeSum::xdstemplate(int run) const {
     }
     return templ.str();
     
+    
+}
+
+/**
+ * expects inp_ at start of 'Run Frames S', the header list of the Run Optimizer
+ * First line gets discarded, runs are read one per line, expecting 14 numbers per line
+ * @return 
+ */
+int StoeSum::getRunsFromOptimiserList() {
+    
+    RunInfo myrun;
+    std::string dummy;
+    int numRuns;
+    try {
+        advanceKeyword("Wavelength:");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    inp_ >> myrun.lambda_;
+    try {
+        advanceKeyword("distance:");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    inp_ >> myrun.delta_;
+    try {
+        advanceKeyword("Cell");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    // Optmiser knows cell, currently unused
+    float a, b, c, alpha, beta, gamma;
+    inp_ >> dummy >> a >> b >> c >> alpha >> beta >> gamma;
+    // Rotation / frame
+    try {
+        advanceKeyword("frame:");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    inp_ >> myrun.deltaAngle_;
+
+    // number of runs listed in header
+    try {
+        advanceKeyword("found:");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    inp_ >> numRuns;
+
+    // jump forward for list of runs
+    try {
+        advanceKeyword("Redund.");
+    }
+    catch (myExcepts::Format& e) {
+        inp_.close();
+        throw;
+    }
+    while (!inp_.eof()) {
+        // unused dummy variables
+        short run, setting;
+        float phi1, t_tot, compl0, compl1, redund0, redund1;
+        inp_ >> run >> myrun.nFrames_ >> setting >> myrun.two_theta_ 
+                >> myrun.omega_[0] >> myrun.omega_[1] >> myrun.chi_ >> myrun.phi_[0]
+                >> myrun.t_ >> t_tot >> compl0 >> compl1 >> redund0 >> redund1;
+        if (inp_.fail()) {
+            break;
+        }
+        // Optimiser seems to create omega scans only
+        myrun.omegascan_ = true;
+        runs_info_.push_back(myrun);
+    }
+    
+    return runs_info_.size();
     
 }
